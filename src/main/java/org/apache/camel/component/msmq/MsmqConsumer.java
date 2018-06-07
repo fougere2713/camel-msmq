@@ -128,6 +128,7 @@ class Task implements Runnable {
                     if (queue.receiveMessage(msmqMessage, 100)) {
                         Message message = exchange.getIn();
                         message.setBody(body);
+                        body.limit((int) msmqMessage.getBodySize());
                         message.setHeader(MsmqConstants.APPSPECIFIC, msmqMessage.getAppSpecific());
                         message.setHeader(MsmqConstants.ARRIVEDTIME, msmqMessage.getArrivedTime());
                         message.setHeader(MsmqConstants.BODY_SIZE, msmqMessage.getBodySize());
