@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 #include "msmq_native_support.h"
-#include <iostream>
+#include<iostream>
+#include<string>
+#include<sstream>
 
 MsmqMessage::MsmqMessage() {
 	propIds[APPSPECIFIC] = PROPID_M_APPSPECIFIC;
@@ -249,7 +251,9 @@ void MsmqQueue::sendMessage(const MsmqMessage& msg) {
 	// see mq.h for details...
 
 	if (FAILED(hr)) {
-		throw std::runtime_error("Error in sending the message");
+	    std::stringstream ss;
+        ss << "Error in sending the message, code " << hr;
+    	throw std::runtime_error(ss.str());
 	}
 }
 
