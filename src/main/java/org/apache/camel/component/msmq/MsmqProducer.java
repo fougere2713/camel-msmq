@@ -85,10 +85,9 @@ public class MsmqProducer extends DefaultProducer {
             msmqMessage.setTimeToBeReceived(timeToLive);
             msmqMessage.setPriority(priority);
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Sending body: " + body);
-            }
+            LOG.debug("Sending body: " + body);
             queue.sendMessage(msmqMessage);
+            LOG.debug("Message sent successfully");
         }
     }
 

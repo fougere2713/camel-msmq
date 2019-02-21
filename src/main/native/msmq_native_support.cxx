@@ -242,20 +242,23 @@ bool MsmqQueue::receiveMessage(MsmqMessage msg, int timeout) {
 void MsmqQueue::sendMessage(const MsmqMessage& msg) {
 	HRESULT hr = MQ_OK;
 
-	// Call MQSendMessage to put the message to the queue. 
+	// Call MQSendMessage to put the message to the queue.
 	hr = MQSendMessage(hQueue, // Handle to the destination queue
 			const_cast<MQMSGPROPS*>(&msg.props), // Pointer to the MQMSGPROPS structure
 			MQ_NO_TRANSACTION);
 
-	// transactionFlag:  MQ_NO_TRANSACTION, MQ_MTS_TRANSACTION, MQ_XA_TRANSACTION, or MQ_SINGLE_MESSAGE 
+	// transactionFlag:  MQ_NO_TRANSACTION, MQ_MTS_TRANSACTION, MQ_XA_TRANSACTION, or MQ_SINGLE_MESSAGE
 	// see mq.h for details...
 
 	if (FAILED(hr)) {
-	    std::stringstream ss;
-        ss << "Error in sending the message, code " << hr;
-    	throw std::runtime_error(ss.str());
+	        if (hr == MQ_ERROR_STALE_HANDLE) {
+                m_isOpen = false;
+    	    }
+            std::stringstream ss;
+            ss << "Error in sending the message, code " << hr;
+            throw std::runtime_error(ss.str());
+	    }
 	}
-}
 
 void MsmqQueue::close() {
 	HRESULT hr = MQ_OK;
